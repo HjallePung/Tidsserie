@@ -201,24 +201,69 @@ aaACFPACFN(error_26, 40, 'error_{26}', 0.05);
 close all;
 clear all;
 x = load("CourseMaterial\Code\data\sturup.mat").sturup;
+y = load("CourseMaterial\Code\data\svedala.mat").svedala;
 
 A = [1 -1.49 0.57];
 B = [0 0 0 0.28 -0.26];
 C = [1];
 
-k = 3;
+
+k = 3; %First case
 [Fk3 Gk3] = polydivision(C, A, k);
 
-yhat_3 = aaFilter(Gk3,C,y, 26);
+BF3 = conv(Fk3, B);
+
+[Fk3_hat Gk3_hat] = polydivision(BF3, C, k);
+
+xhat_3 = filter(Gk3,C,x);
+
+yhat_3 = aaFilter(Fk3_hat,1,x,26) + aaFilter(Gk3_hat,C,x,26) + aaFilter(Gk3,C,y, 26);
 
 error_3 = y(27:end) - yhat_3;
 
 k = 26;
+
 [Fk26 Gk26] = polydivision(C, A, k);
 
-yhat_26 = aaFilter(Gk26,C,y, 26);
+[Fk26 Gk26] = polydivision(C, A, k);
+
+BF26 = conv(Fk26, B);
+
+[Fk26_hat Gk26_hat] = polydivision(BF26, C, k);
+
+yhat_26 = aaFilter(Fk26_hat,1,x,26) + aaFilter(Gk26_hat,C,x,26) + aaFilter(Gk26,C,y, 26);
 
 error_26 = y(27:end) - yhat_26;
 
 aaACFPACFN(error_3, 40, "error_3", 0.05)
 aaACFPACFN(error_26, 40, "error_{26}", 0.05)
+
+%% plot the predictions
+figure;
+plot(y(27:end))
+hold on;
+plot(yhat_3)
+%hold on;
+%plot(yhat_26)
+legend('y' ,'y_3')
+
+%% Variance of y3
+figure;
+plot(error_3)
+
+fprintf("Variance for k = 3: %f", var(error_3))
+
+%% Without the Fhat term
+y3_wrong = yhat_3 - aaFilter(Fk3_hat,1,x,26);
+
+figure;
+plot(y(27:end))
+hold on;
+plot(y3_wrong)
+
+error_wrong = y(27:end) - y3_wrong;
+
+figure;
+plot(error_wrong)
+
+fprintf("Variance for k = 3: %f", var(error_wrong))
