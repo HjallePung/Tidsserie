@@ -13,5 +13,5 @@ subplot(312)
 pacfEst = pacf( data, noLags, signLvl, 1 );
 title( sprintf('PACF (%s)',titleStr))
 subplot(313)
-normplot(data)
+normplot(data);
 title(sprintf('Normal Probability (%s)',titleStr))

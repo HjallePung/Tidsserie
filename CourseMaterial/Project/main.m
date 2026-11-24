@@ -6,7 +6,7 @@ projectData = load("projectData26.mat");
 time = projectData.timeData;
 waterflow = projectData.waterflowData;
 waterflowData = iddata(waterflow);
-
+%%
 lags = 20;
 
 plot(waterflow)
@@ -51,5 +51,4 @@ aaACFPACFN(e_hat, lags, "residual", 0.05);
 
 figure
 plot(e_hat)
-
 
