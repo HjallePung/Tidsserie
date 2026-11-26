@@ -215,7 +215,45 @@ BF3 = conv(Fk3, B);
 
 [Fk3_hat Gk3_hat] = polydivision(BF3, C, k);
 
-xhat_3 = filter(Gk3,C,x);
+%%
+aaACFPACFN(x, 40, "bruh", 0.05);
+
+A_x_hat = [1 0 0];
+
+modinit = idpoly(A_x_hat, [], []);
+
+mod_x_hat = pem(x, modinit);
+
+present(mod_x_hat);
+
+err = aaFilt(mod_x_hat.A, 1, x);
+
+aaACFPACFN(err, 40, "fah", 0.05);
+
+%%
+A_x_hat = [1 0 0];
+
+C_x_hat = [1 zeros(1, 23) 0];
+
+modinit = idpoly(A_x_hat, [], C_x_hat);
+
+modinit.Structure.c.Free = [zeros(1,24) 1];
+
+mod_x_hat = pem(x, modinit);
+
+present(mod_x_hat);
+
+err = aaFilt(mod_x_hat.A, mod_x_hat.C, x);
+
+aaACFPACFN(err, 40, "fah", 0.05);
+
+%%
+[Fkx Gkx] = polydivision(mod_x_hat.C, mod_x_hat.A, 3);
+
+x_hat = filter(Gkx, mod_x_hat.C, x);
+
+
+%%
 
 yhat_3 = aaFilter(Fk3_hat,1,x,26) + aaFilter(Gk3_hat,C,x,26) + aaFilter(Gk3,C,y, 26);
 
@@ -254,16 +292,19 @@ plot(error_3)
 fprintf("Variance for k = 3: %f", var(error_3))
 
 %% Without the Fhat term
-y3_wrong = yhat_3 - aaFilter(Fk3_hat,1,x,26);
+y3_wrong = yhat_3 - aaFilter(Fk3_hat,1,x_hat,26);
+
+
 
 figure;
-plot(y(27:end))
+plot(y(27:end));
 hold on;
-plot(y3_wrong)
+plot(y3_wrong);
 
 error_wrong = y(27:end) - y3_wrong;
 
 figure;
-plot(error_wrong)
+plot(error_wrong);
 
-fprintf("Variance for k = 3: %f", var(error_wrong))
+fprintf("Variance for k = 3: %f\n", var(error_wrong))
+disp(norm(aaFilter(Fk3_hat,1,x_hat,26)))

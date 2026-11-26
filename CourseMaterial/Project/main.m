@@ -6,6 +6,7 @@ projectData = load("projectData26.mat");
 time = projectData.timeData;
 waterflow = projectData.waterflowData;
 waterflowData = iddata(waterflow);
+sarimaWorkbench(waterflowData)
 %%
 lags = 20;
 
