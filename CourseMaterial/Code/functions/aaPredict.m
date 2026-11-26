@@ -3,7 +3,7 @@ function [y_hat Fk Gk] = aaPredict(y, C, A, k)
 %   Detailed explanation goes here
 [Fk Gk] = polydivision(C, A, k);
 
-y_hat = aaFilt(Gk,C,y);
+y_hat = filter(Gk,C,y);
 
 end
 

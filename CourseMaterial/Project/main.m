@@ -6,7 +6,7 @@ projectData = load("projectData26.mat");
 time = projectData.timeData;
 waterflow = projectData.waterflowData;
 waterflowData = iddata(waterflow);
-sarimaWorkbench(waterflowData)
+%sarimaWorkbench(waterflowData)
 %%
 lags = 20;
 
@@ -39,7 +39,7 @@ aaACFPACFN(e_hat, lags, "residual", 0.05);
 figure
 plot(e_hat)
 
-%% Model Step
+%% Model Step NOT SIGNIFICANT, keep AR(1)!
 modelinit = idpoly([1 0], [], [1 0]);
 % modelinit.Structure.c.Free = [1 zeros(1,4) 1];
 mod1 = pem(waterflowTrainingData, modelinit);
@@ -53,3 +53,9 @@ aaACFPACFN(e_hat, lags, "residual", 0.05);
 figure
 plot(e_hat)
 
+%%
+nbdData = projectData.nbdData;
+tempData = projectData.tempData;
+timeData = projectData.timeData;
+
+plot(timeData);
